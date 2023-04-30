@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import DiaryEntryForm from './components/DiaryEntryForm';
 import DiaryEntriesList from './components/DiaryEntriesList';
 import './components/styles.css';
+import './global-styles.css';
 
 const App = () => {
 const [entries, setEntries] = useState([]);

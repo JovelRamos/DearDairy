@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './styles.css';
+import './global-styles.css';
 
 const DiaryEntryForm = ({ onSubmit }) => {
   const [text, setText] = useState('');

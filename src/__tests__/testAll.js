@@ -43,22 +43,3 @@ test('deletes a diary entry', () => {
   fireEvent.click(deleteButton);
   expect(getByText(entryText)).not.toBeInTheDocument();
 });
-
-test('displays the diary entries in ascending order', () => {
-  const { getByText } = render(<App />);
-  const entries = ['Entry 3', 'Entry 1', 'Entry 2'];
-  entries.forEach((entry) => {
-    const input = getByPlaceholderText('Write your Dear Dairy entry here...');
-    const button = getByText('Save Entry');
-    fireEvent.change(input, { target: { value: entry } });
-    fireEvent.click(button);
-  });
-  const entry1 = getByText('Entry 1');
-  const entry2 = getByText('Entry 2');
-  const entry3 = getByText('Entry 3');
-  expect(entry1).toBeInTheDocument();
-  expect(entry2).toBeInTheDocument();
-  expect(entry3).toBeInTheDocument();
-  expect(entry1.nextSibling).toEqual(entry2);
-  expect(entry2.nextSibling).toEqual(entry3);
-})

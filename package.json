@@ -14,7 +14,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --rootDir='./__tests__/'",
+    "test": "react-scripts test --testMatch='**/__tests__/**/*.{js,jsx,ts,tsx}'",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

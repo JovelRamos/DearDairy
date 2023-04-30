@@ -1,27 +1,26 @@
-import React from 'react';
-import DiaryEntryForm from './DiaryEntryForm';
-import DiaryEntriesList from './DiaryEntriesList';
-import './global-styles.css';
+import React, { useState } from 'react';
+import '../global-styles.css';
+import './components-styles.css';
 
 const DiaryEntry = ({ entry, onEdit, onDelete }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [text, setText] = useState(entry.text);
 
-  const handleEdit = () => {
+  const handleEditClick = () => {
     setIsEditing(true);
   };
 
-  const handleSave = () => {
-    onEdit(entry.id, text);
-    setIsEditing(false);
-  };
-
-  const handleDelete = () => {
+  const handleDeleteClick = () => {
     onDelete(entry.id);
   };
 
-  const handleCancel = () => {
+  const handleCancelClick = () => {
+    setIsEditing(false);
     setText(entry.text);
+  };
+
+  const handleSaveClick = () => {
+    onEdit(entry.id, text);
     setIsEditing(false);
   };
 
@@ -29,21 +28,24 @@ const DiaryEntry = ({ entry, onEdit, onDelete }) => {
     <div className="diary-entry">
       <h3 className="entry-date">{entry.date}</h3>
       {isEditing ? (
-        <div>
-          <textarea
-            aria-label="Edit entry"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            className="entry-textarea"
-          />
-          <button aria-label="Save" onClick={handleSave}>Save</button>
-          <button aria-label="Cancel" onClick={handleCancel}>Cancel</button>
+        <div className="edit-form">
+          <textarea value={text} onChange={(e) => setText(e.target.value)} />
+          <div className="edit-buttons">
+            <button onClick={handleCancelClick}>Cancel</button>
+            <button onClick={handleSaveClick}>Save</button>
+          </div>
         </div>
       ) : (
-        <div>
-          <p className="entry-text">{entry.text}</p>
-          <button aria-label="Edit" onClick={handleEdit}>Edit</button>
-          <button aria-label="Delete" onClick={handleDelete}>Delete</button>
+        <div className="entry-text">
+          <p>{entry.text}</p>
+          <div className="entry-buttons">
+            <button className="edit-btn" onClick={handleEditClick}>
+              Edit
+            </button>
+            <button className="delete-btn" onClick={handleDeleteClick}>
+              Delete
+            </button>
+          </div>
         </div>
       )}
     </div>

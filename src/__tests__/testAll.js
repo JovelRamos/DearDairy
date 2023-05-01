@@ -1,8 +1,10 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
 import App from '../App';
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event';
+
 
 describe('Diary entry submission', () => {
   test('submitting a diary entry', async () => {

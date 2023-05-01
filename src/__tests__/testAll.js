@@ -5,8 +5,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event';
 
 
-describe('Diary entry submission', () => {
-  test('submitting a diary entry', async () => {
+describe('Diary entry submission and editing', () => {
+  test('submitting and editing a diary entry', async () => {
     render(<App />);
     const textarea = screen.getByPlaceholderText('Write your Dear Diary entry here...');
     const submitButton = screen.getByText('Save Entry');
@@ -26,6 +26,22 @@ describe('Diary entry submission', () => {
 
     // Expect the textarea to be cleared after submission
     expect(textarea).toHaveValue('');
+
+    // Click the Edit button
+    const editButton = screen.getByText('Edit');
+    fireEvent.click(editButton);
+
+    // Type an updated diary entry into the textarea
+    await act(async () => {
+      await userEvent.type(textarea, 'My updated diary entry!');
+    });
+
+    // Click the Save button
+    const saveButton = screen.getByText('Save');
+    fireEvent.click(saveButton);
+
+    // Expect the updated entry to be in the document
+    expect(screen.getByText('My updated diary entry!')).toBeInTheDocument();
   });
 });
 

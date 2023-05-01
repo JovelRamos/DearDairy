@@ -1,7 +1,8 @@
 import React from 'react';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import App from '../App';
+import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event';
-import App from './App';
 
 describe('Diary entry submission', () => {
   test('submitting a diary entry', async () => {
@@ -26,3 +27,4 @@ describe('Diary entry submission', () => {
     expect(textarea).toHaveValue('');
   });
 });
+

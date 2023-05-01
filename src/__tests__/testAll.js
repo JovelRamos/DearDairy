@@ -5,8 +5,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event';
 
 
-describe('Diary entry submission and editing', () => {
-  test('submitting and editing a diary entry', async () => {
+describe('Diary entry submission, editing, and canceling edit', () => {
+  test('submitting, editing, and canceling edit of a diary entry', async () => {
     render(<App />);
     const textarea = screen.getByPlaceholderText('Write your Dear Diary entry here...');
     const submitButton = screen.getByText('Save Entry');
@@ -36,12 +36,14 @@ describe('Diary entry submission and editing', () => {
       await userEvent.type(textarea, 'My updated diary entry!');
     });
 
-    // Click the Save button
-    const saveButton = screen.getByText('Save');
-    fireEvent.click(saveButton);
+    // Click the Cancel button
+    const cancelButton = screen.getByText('Cancel');
+    fireEvent.click(cancelButton);
 
-    // Expect the updated entry to be in the document
-    expect(screen.getByText('My updated diary entry!')).toBeInTheDocument();
+    // Expect the original entry to be in the document
+    expect(screen.getByText('My first diary entry!')).toBeInTheDocument();
+
+    // Expect the updated entry not to be in the document
+    expect(screen.queryByText('My updated diary entry!')).toBeNull();
   });
 });
-

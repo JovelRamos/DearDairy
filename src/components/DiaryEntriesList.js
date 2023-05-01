@@ -4,11 +4,21 @@ import DiaryEntry from './DiaryEntry';
 import '../global-styles.css';
 import './components-styles.css';
 
-const DiaryEntriesList = ({ entries, onEditEntry, onDeleteEntry }) => (
-  <Card.Group itemsPerRow={1} stackable className="entries-list">
-    {entries.map((entry) => (
-      <DiaryEntry key={entry.id} entry={entry} onEdit={onEditEntry} onDelete={() => onDeleteEntry(entry.id)} />
-    ))}
-  </Card.Group>
-);
+const DiaryEntriesList = ({ entries, onEditEntry, onDeleteEntry }) => {
+  const sortedEntries = [...entries].sort((a, b) => b.id - a.id);
+
+  return (
+    <Card.Group itemsPerRow={1} stackable className="entries-list">
+      {sortedEntries.map((entry) => (
+        <DiaryEntry
+          key={entry.id}
+          entry={entry}
+          onEdit={onEditEntry}
+          onDelete={() => onDeleteEntry(entry.id)}
+        />
+      ))}
+    </Card.Group>
+  );
+};
+
 export default DiaryEntriesList;

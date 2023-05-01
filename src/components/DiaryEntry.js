@@ -39,7 +39,7 @@ const DiaryEntry = ({ entry, onEdit, onDelete }) => {
           </div>
         ) : (
           <Card.Description>
-            <p>{entry.text}</p>
+            <p>{entry.text.split('\n').map((line, i) => <div key={i}>{line}</div>)}</p>
             <div className="entry-buttons">
               <Button className="edit-btn" onClick={handleEditClick}>
                 Edit

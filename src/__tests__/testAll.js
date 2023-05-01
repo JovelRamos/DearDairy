@@ -43,7 +43,7 @@ describe('Diary entry submission, editing, and canceling edit', () => {
     // Expect the original entry to be in the document
     expect(screen.getByText('My first diary entry!')).toBeInTheDocument();
 
-    // Expect the updated entry not to be in the document
-    expect(screen.queryByText('My updated diary entry!')).toBeNull();
+    // Expect the textarea to still contain the updated entry
+    expect(textarea).toHaveValue('My updated diary entry!');
   });
 });

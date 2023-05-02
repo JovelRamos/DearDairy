@@ -6,7 +6,7 @@ import userEvent from '@testing-library/user-event';
 
 
 describe('Diary entry submission, editing, canceling edit, and deleting', () => {
-  test('submitting, editing, canceling edit of a diary entry, and deleting', async () => {
+  test('submitting a diary entry', async () => {
     render(<App />);
     const textarea = screen.getByPlaceholderText('Write your Dear Diary entry here...');
     const submitButton = screen.getByText('Save Entry');
@@ -26,12 +26,39 @@ describe('Diary entry submission, editing, canceling edit, and deleting', () => 
 
     // Expect the textarea to be cleared after submission
     expect(textarea).toHaveValue('');
+  });
+
+  test('editing a diary entry', async () => {
+    render(<App />);
+    const textarea = screen.getByPlaceholderText('Write your Dear Diary entry here...');
+    const submitButton = screen.getByText('Save Entry');
+    await act(async () => {
+      await userEvent.type(textarea, 'My first diary entry!');
+      fireEvent.click(submitButton);
+    });
 
     // Click the Edit button
     const editButton = screen.getByText('Edit');
     fireEvent.click(editButton);
 
     // Type an updated diary entry into the textarea
+    await act(async () => {
+      await userEvent.type(textarea, 'My updated diary entry!');
+    });
+  });
+
+  test('canceling edit of a diary entry', async () => {
+    render(<App />);
+    const textarea = screen.getByPlaceholderText('Write your Dear Diary entry here...');
+    const submitButton = screen.getByText('Save Entry');
+    await act(async () => {
+      await userEvent.type(textarea, 'My first diary entry!');
+      fireEvent.click(submitButton);
+    });
+
+    const editButton = screen.getByText('Edit');
+    fireEvent.click(editButton);
+
     await act(async () => {
       await userEvent.type(textarea, 'My updated diary entry!');
     });
@@ -45,9 +72,16 @@ describe('Diary entry submission, editing, canceling edit, and deleting', () => 
 
     // Expect the textarea to still contain the updated entry
     expect(textarea).toHaveValue('My updated diary entry!');
+  });
 
-    // Expect the textarea to still contain the updated entry
-    expect(textarea).toHaveValue('My updated diary entry!');
+  test('deleting a diary entry', async () => {
+    render(<App />);
+    const textarea = screen.getByPlaceholderText('Write your Dear Diary entry here...');
+    const submitButton = screen.getByText('Save Entry');
+    await act(async () => {
+      await userEvent.type(textarea, 'My first diary entry!');
+      fireEvent.click(submitButton);
+    });
 
     // Click the Delete button
     const deleteButton = screen.getByText('Delete');

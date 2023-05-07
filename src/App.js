@@ -3,6 +3,7 @@ import React from 'react';
 import { Container, Header, Image, Segment } from 'semantic-ui-react';
 import FoodEntryStack from './components/FoodEntryStack';
 import logo from './logo.png';
+import 'semantic-ui-css/semantic.min.css';
 
 function App() {
   return (
@@ -14,7 +15,9 @@ function App() {
         </Header>
       </Segment>
       <Container style={{ marginTop: '2em' }}>
+      <div className="app-content">
         <FoodEntryStack />
+      </div>
       </Container>
     </div>
   );

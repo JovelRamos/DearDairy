@@ -8,57 +8,57 @@ import FoodEntry from '../components/FoodEntry';
 import App from '../App';
 
 describe('Food Entry Application', () => {
-    beforeEach(() => {
-        render(<App />);
-    });
+  beforeEach(() => {
+    render(<App />);
+  });
 
-    test('renders the application header', () => {
-        const headerElement = screen.getByText(/Dear Dairy/i);
-        expect(headerElement).toBeInTheDocument();
-    });
+  test('renders the application header', () => {
+    const headerElement = screen.getByText(/Dear Dairy/i);
+    expect(headerElement).toBeInTheDocument();
+  });
 
-    test('renders the Food Entry form', async () => {
-        const foodDropdown = screen.getByLabelText(/Select Food/i);
-        const sizeInput = screen.getByLabelText(/Size/i);
-        const unitDropdown = screen.getByLabelText(/Unit/i);
-        const addButton = screen.getByText(/Add Food!/i);
-        const submitButton = screen.getByText(/Submit Entry/i);
+  test('renders the Food Entry form', async () => {
+    const foodDropdown = await screen.findByTestId('food-dropdown');
+    const sizeInput = screen.getByPlaceholderText(/Size/i);
+    const unitDropdown = screen.getByTestId('unit-dropdown');
+    const addButton = screen.getByText(/Add Food!/i);
+    const submitButton = screen.getByText(/Submit Entry/i);
 
-        expect(foodDropdown).toBeInTheDocument();
-        expect(sizeInput).toBeInTheDocument();
-        expect(unitDropdown).toBeInTheDocument();
-        expect(addButton).toBeInTheDocument();
-        expect(submitButton).toBeInTheDocument();
-    });
+    expect(foodDropdown).toBeInTheDocument();
+    expect(sizeInput).toBeInTheDocument();
+    expect(unitDropdown).toBeInTheDocument();
+    expect(addButton).toBeInTheDocument();
+    expect(submitButton).toBeInTheDocument();
+  });
 
-    test('adds a food entry to the table and displays the total row', async () => {
-        const foodDropdown = screen.getByLabelText(/Select Food/i);
-        const sizeInput = screen.getByLabelText(/Size/i);
-        const unitDropdown = screen.getByLabelText(/Unit/i);
-        const submitButton = screen.getByText(/Submit Entry/i);
+  test('adds a food entry to the table and displays the total row', async () => {
+    const foodDropdown = screen.getByTestId('food-dropdown');
+    const sizeInput = screen.getByPlaceholderText(/Size/i);
+    const unitDropdown = screen.getByTestId('unit-dropdown');
+    const submitButton = screen.getByText(/Submit Entry/i);
 
-        // Select the first food from the data
-        fireEvent.click(foodDropdown);
-        const foodOption = screen.getByText(new RegExp(data.data[0].food_name, 'i'));
-        fireEvent.click(foodOption);
+    // Select the first food from the data
+    fireEvent.click(foodDropdown);
+    const foodOption = screen.getByText(new RegExp(data.data[0].food_name, 'i'));
+    fireEvent.click(foodOption);
 
-        // Set the serving size
-        fireEvent.change(sizeInput, { target: { value: '1' } });
+    // Set the serving size
+    fireEvent.change(sizeInput, { target: { value: '1' } });
 
-        // Select the first unit for the food
-        fireEvent.click(unitDropdown);
-        const unitOption = screen.getByText(/oz/i);
-        fireEvent.click(unitOption);
+    // Select the first unit for the food
+    fireEvent.click(unitDropdown);
+    const unitOption = screen.getByText(/oz/i);
+    fireEvent.click(unitOption);
 
-        // Submit the form
-        fireEvent.click(submitButton);
+    // Submit the form
+    fireEvent.click(submitButton);
 
-        // Check if the entry is added to the table
-        const foodEntry = screen.getByText(new RegExp(data.data[0].food_name, 'i'));
-        expect(foodEntry).toBeInTheDocument();
+    // Check if the entry is added to the table
+    const foodEntry = screen.getByText(new RegExp(data.data[0].food_name, 'i'));
+    expect(foodEntry).toBeInTheDocument();
 
-        // Check if the total row is displayed
-        const totalRow = screen.getByText(/Total/i);
-        expect(totalRow).toBeInTheDocument();
-    });
+    // Check if the total row is displayed
+    const totalRow = screen.getByText(/Total/i);
+    expect(totalRow).toBeInTheDocument();
+  });
 });

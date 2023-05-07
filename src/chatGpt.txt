@@ -1,0 +1,343 @@
+Edit this code so it reads from a data.json file of foods with the following format:
+`data.json`
+```json
+{"data": [{"food_id": 614, "food_name": "Almonds", "serving_size": "1.00", "is_solid": 1, "calories": "163.00", "protein": "6.00", "fats": "14.00", "carbohydrates": "6.00", "serving_unit": "oz"}, {"food_id": 615, "food_name": "Apple", "serving_size": "1.00", "is_solid": 1, "calories": "95.00", "protein": "0.50", "fats": "0.30", "carbohydrates": "25.00", "serving_unit": "oz"},
+```
+
+`FoodEntryForm.js`
+```javascript
+import React, { useState, useEffect, useRef } from 'react';
+import { Button, Form, Dropdown, Icon, Input } from 'semantic-ui-react';
+import { calculateTotalNutritionalValues } from './Calculations';
+import './FoodEntryForm.css';
+import 'semantic-ui-css/semantic.min.css';
+
+
+function FoodEntryForm({ handleEntry, foods }) {
+  const [selectedFoods, setSelectedFoods] = useState([{ food: '', unit: '', servingSize: '', id: 0 }]);
+  const foodOptions = foods.map((food) => ({
+    key: food.food_id,
+    text: food.food_name,
+    value: food.food_name,
+  }));
+    const solidUnits = ['oz', 'g', 'lb(s)', 'kg(s)'];
+  const liquidUnits = ['fl oz', 'mL', 'cup', 'tbsp', 'tsp', 'ltr'];
+  const formRef = useRef(null);
+
+  const handleChange = (e, { value }, index, field) => {
+    const newSelectedFoods = [...selectedFoods];
+    newSelectedFoods[index][field] = value;
+    setSelectedFoods(newSelectedFoods);
+  };
+
+  const addFoodDropdown = (event) => {
+    event.preventDefault();
+    setSelectedFoods([...selectedFoods, { food: '', unit: '', servingSize: '', id: selectedFoods.length }]);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newEntries = selectedFoods.map(selectedFood => {
+      const food = foods.find(food => food.food_name === selectedFood.food);
+      if (food) {
+        const totalNutritionalValues = calculateTotalNutritionalValues(food, selectedFood.servingSize, selectedFood.unit);
+        return {
+          food: selectedFood.food,
+          calories: totalNutritionalValues.totalCalories,
+          proteins: totalNutritionalValues.totalProteins,
+          fats: totalNutritionalValues.totalFats,
+          carbohydrates: totalNutritionalValues.totalCarbs
+        };
+      }
+      return null;
+    }).filter(entry => entry !== null);
+
+    if (newEntries.length > 0) {
+      handleEntry(newEntries);
+      setSelectedFoods([{ food: '', unit: '', servingSize: '', id: 0 }]);
+    }
+  };
+
+  return (
+    <>
+      <div className="form-container">
+      <Form onSubmit={handleSubmit} ref={formRef}>
+        {selectedFoods.map((selectedFood, index) => {
+          const food = foods.find(food => food.food_name === selectedFood.food);
+          const isSolid = food ? food.is_solid : null;
+          const unitOptions = (isSolid ? solidUnits : liquidUnits).map(unit => ({ key: unit, text: unit, value: unit }));
+
+          return (
+            <div key={selectedFood.id} style={{ marginBottom: '1em' }}>
+              <Dropdown
+                fluid
+                search
+                selection
+                options={foodOptions}
+                placeholder='Select food'
+                value={selectedFood.food}
+                onChange={(e, data) => handleChange(e, data, index, 'food')}
+                style={{ marginBottom: '1em' }}
+              />
+              <Input
+                placeholder='Size'
+                type='number'
+                disabled={!selectedFood.food}
+                value={selectedFood.servingSize}
+                onChange={(e) => handleChange(e, { value: e.target.value }, index, 'servingSize')}
+                min={1}
+                style={{ width: '30%' }}
+              />
+              <Dropdown
+                compact
+                search
+                selection
+                options={unitOptions}
+                placeholder='Unit'
+                disabled={!selectedFood.food}
+                value={selectedFood.unit}
+                onChange={(e, data) => handleChange(e, data, index, 'unit')} style={{ width: '70%' }}
+              />
+            </div>
+          );
+        })}
+        <Button icon fluid onClick={(e) => addFoodDropdown(e)} style={{ marginBottom: '1em' }} color='green' animated='fade'>
+          <Button.Content visible><Icon name='add circle' /></Button.Content>
+          <Button.Content hidden>Add Food!</Button.Content>
+        </Button>
+        <Button fluid style={{ marginBottom: '1em' }} type='submit' color='blue'>
+          Submit Entry
+        </Button>
+
+      </Form>
+      </div>
+    </>
+  );
+}
+
+export default FoodEntryForm;
+
+```
+
+`FoodEntry.js`
+```javascript
+import React from 'react';
+import { Button, Icon, Table, Popup} from 'semantic-ui-react';
+
+function FoodEntry({ food, calories, proteins, fats, carbohydrates, deleteEntry, deleteButtonStyle }) {
+  return (
+    <Table.Row>
+      <Table.Cell textAlign="center">{food}</Table.Cell>
+      <Table.Cell textAlign="center">{Math.round(calories)}</Table.Cell>
+      <Table.Cell textAlign="center">{Math.round(proteins)}</Table.Cell>
+      <Table.Cell textAlign="center">{Math.round(fats)}</Table.Cell>
+      <Table.Cell textAlign="center">{Math.round(carbohydrates)}</Table.Cell>
+      <Table.Cell textAlign="center">
+      <Popup content='Delete Food' trigger={<Button onClick={deleteEntry} style={deleteButtonStyle}>
+          <Icon name="minus circle" color="red" />
+        </Button>} />
+        
+      </Table.Cell>
+    </Table.Row>
+  );
+}
+
+export default FoodEntry;
+```
+
+`FoodEntryStack.js`
+```
+import React, { useState, useEffect } from 'react';
+import { Table, Card, Header, Button, Icon, Popup, Confirm } from 'semantic-ui-react';
+import FoodEntry from './FoodEntry';
+import FoodEntryForm from './FoodEntryForm';
+import moment from 'moment';
+import 'semantic-ui-css/semantic.min.css';
+import data from './data.json';
+
+
+function FoodEntryStack() {
+  const [tables, setTables] = useState([]);
+  const [foods, setFoods] = useState([]);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [tableToDelete, setTableToDelete] = useState(null);
+
+  // This is using a live, local, Django database
+  // useEffect(() => {
+  //   const fetchFoods = async () => {
+  //     const response = await fetch('http://localhost:8000/nutrition');
+  //     const data = await response.json();
+  //     setFoods(data.data);
+  //   };
+  //   fetchFoods();
+  // }, []);
+
+  // This is using a static JSON file of the Django database
+  useEffect(() => {
+    setFoods(data.data);
+  }, []);
+  
+
+  const getCurrentDate = () => {
+    const today = new Date();
+    return moment(today).format('MMMM D');
+  };
+
+  const handleEntry = (newEntries) => {
+    setTables((prevTables) => [
+      { entries: newEntries, id: prevTables.length, date: getCurrentDate() },
+      ...prevTables,
+    ]);
+  };
+
+  const handleCancel = () => {
+    setTableToDelete(null);
+    setConfirmOpen(false);
+  };
+
+  const handleConfirm = () => {
+    deleteTable(tableToDelete);
+    setTableToDelete(null);
+    setConfirmOpen(false);
+  };
+
+
+  const deleteEntry = (tableIndex, entryIndex) => {
+    setTables((prevTables) => {
+      const updatedTables = prevTables.map((table, index) =>
+        index === tableIndex
+          ? {
+            ...table,
+            entries: table.entries.filter((_, i) => i !== entryIndex),
+          }
+          : table
+      );
+      return updatedTables;
+    });
+  };
+
+  const deleteTable = (tableIndex) => {
+    setTables((prevTables) => prevTables.filter((_, index) => index !== tableIndex));
+  };
+
+  const style = {
+    stack: { marginBottom: '2rem' },
+    cardHeader: { backgroundColor: '#ACB1D6', color: '#F1F6F9', marginBottom: '0', paddingBottom: '0' },
+    tableHeader: { backgroundColor: '#8294C4', color: '#F1F6F9' },
+    deleteColumn: { width: '1%' },
+    tableNoMargin: { margin: '0' },
+    cardShadow: {
+      boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+      borderRadius: '5px',
+    },
+  };
+  
+
+  return (
+    <div>
+      <Header as='h3' dividing textAlign='center' style={{ color: "black", fontFamily: 'Kaushan Script' }}>Write Your Diary Entries Here!</Header>
+      <div className="form-wrapper">
+        <FoodEntryForm handleEntry={handleEntry} foods={foods} />
+      </div>
+      <Header as='h3' dividing textAlign='center' style={{ color: "black", fontFamily: 'Kaushan Script' }} >Your Diary Entries!</Header>
+
+      {tables.map((table, tableIndex) => (
+  <div key={table.id} style={style.stack}>
+    <Card fluid style={style.cardShadow}>
+      <Card.Content style={style.cardHeader}>
+        <Card.Header textAlign="center" style={{color: "white", fontFamily: 'Kaushan Script'}}>{table.date}</Card.Header>
+      </Card.Content>
+      <Table celled key={table.id} style={style.tableNoMargin}>
+            <Table.Header style={{ color: "white", fontFamily: 'Kaushan Script' }}>
+              <Table.Row>
+                <Table.HeaderCell textAlign="center">Food</Table.HeaderCell>
+                <Table.HeaderCell textAlign="center">Calories</Table.HeaderCell>
+                <Table.HeaderCell textAlign="center">Proteins</Table.HeaderCell>
+                <Table.HeaderCell textAlign="center">Fats</Table.HeaderCell>
+                <Table.HeaderCell textAlign="center">Carbohydrates</Table.HeaderCell>
+                <Table.HeaderCell textAlign="center" style={style.deleteColumn}>
+                  <Popup
+                    content="Delete Entry"
+                    trigger={
+                      <Button
+                        color="red"
+                        onClick={() => {
+                          setTableToDelete(tableIndex);
+                          setConfirmOpen(true);
+                        }}
+                      >
+                        <Icon name="minus circle" color="white" />
+                      </Button>
+                    }
+                  />
+                  <Confirm
+                    open={confirmOpen}
+                    onCancel={handleCancel}
+                    onConfirm={handleConfirm}
+                    content="Are you sure you want to delete your entry?"
+                  />
+                </Table.HeaderCell>
+
+              </Table.Row>
+            </Table.Header>
+            <Table.Body style={{ color: "black", fontFamily: 'Kaushan Script' }}>
+              {table.entries.map((entry, entryIndex) => (
+                <FoodEntry
+                  key={entryIndex}
+                  food={entry.food}
+                  calories={entry.calories}
+                  proteins={entry.proteins}
+                  fats={entry.fats}
+                  carbohydrates={entry.carbohydrates}
+                  deleteEntry={() => deleteEntry(tableIndex, entryIndex)}
+                />
+              ))}
+              <Table.Row>
+                <Table.Cell textAlign="center"><strong>Total</strong></Table.Cell>
+                <Table.Cell textAlign="center"><strong>{table.entries.reduce((acc, entry) => acc + Math.round(entry.calories), 0)}</strong></Table.Cell>
+                <Table.Cell textAlign="center"><strong>{table.entries.reduce((acc, entry) => acc + Math.round(entry.proteins), 0)}</strong></Table.Cell>
+                <Table.Cell textAlign="center"><strong>{table.entries.reduce((acc, entry) => acc + Math.round(entry.fats), 0)}</strong></Table.Cell>
+                <Table.Cell textAlign="center"><strong>{table.entries.reduce((acc, entry) => acc + Math.round(entry.carbohydrates), 0)}</strong></Table.Cell>
+                <Table.Cell textAlign="center"></Table.Cell>
+              </Table.Row>
+            </Table.Body>
+            </Table>
+    </Card>
+  </div>
+))}
+    </div>
+  );
+}
+
+export default FoodEntryStack;
+```
+
+`App.js`
+```
+import './App.css';
+import React from 'react';
+import { Container, Header, Image, Segment } from 'semantic-ui-react';
+import FoodEntryStack from './components/FoodEntryStack';
+import logo from './logo.png';
+import 'semantic-ui-css/semantic.min.css';
+
+function App() {
+  return (
+    <div>
+      <Segment inverted textAlign='center' style={{ padding: '1em 0em', backgroundColor: '#8294C4' }}>
+        <Header as='h1' style={{ fontFamily: 'Kaushan Script', fontSize: '4em', margin: 0, color: '#eeeeee' }}>
+          <Image src={logo} style={{ width: '2em', height: '2em', marginRight: '0.5em' }} />
+          Dear Dairy
+        </Header>
+      </Segment>
+      <Container style={{ marginTop: '2em' }}>
+      <div className="app-content">
+        <FoodEntryStack />
+      </div>
+      </Container>
+    </div>
+  );
+}
+
+export default App;
+```

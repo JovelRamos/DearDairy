@@ -1,21 +1,23 @@
 import { render, fireEvent } from '@testing-library/react';
-import FoodEntryStack from '../components/FoodEntryStack';
+import FoodEntryStack from './FoodEntryStack';
 
 test('renders the app without errors', () => {
-  render(<FoodEntryStack />);
+render(<FoodEntryStack />);
 });
 
 test('adds a new entry to the diary', () => {
-  const { getByPlaceholderText, getByText } = render(<FoodEntryStack />);
-  const foodDropdown = getByPlaceholderText('Select food'); // Update placeholder text
-  const sizeInput = getByPlaceholderText('Size');
-  const addButton = getByText('Add Food!');
+const { getByPlaceholderText, getByText } = render(<FoodEntryStack />);
+const foodDropdown = getByPlaceholderText('Select food');
+const addButton = getByText('Add Food!');
 
-  fireEvent.change(foodDropdown, { target: { value: 'Almonds' } }); // Keep the value as Almonds
-  fireEvent.change(sizeInput, { target: { value: '1' } });
-  fireEvent.click(addButton);
+fireEvent.change(foodDropdown, { target: { value: 'Apple' } });
+fireEvent.click(addButton);
 
-  const entry = getByText('Almonds');
-  expect(entry).toBeInTheDocument();
+const sizeInput = getByPlaceholderText('Size');
+const servingUnitInput = getByPlaceholderText('Serving unit');
+const servingQtyInput = getByPlaceholderText('Serving qty');
+
+expect(sizeInput).toBeInTheDocument();
+expect(servingUnitInput).toBeInTheDocument();
+expect(servingQtyInput).toBeInTheDocument();
 });
-

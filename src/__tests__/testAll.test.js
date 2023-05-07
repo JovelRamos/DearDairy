@@ -3,91 +3,45 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 import App from '../App';
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event';
+import FoodEntryForm from '../components/FoodEntryForm';
 
+describe('FoodEntryForm', () => {
+  const mockHandleEntry = jest.fn();
+  const mockFoods = [
+    { food_id: 1, food_name: 'apple', is_solid: true },
+    { food_id: 2, food_name: 'milk', is_solid: false },
+  ];
 
-describe('Diary entry submission, editing, canceling edit, and deleting', () => {
-  test('submitting a diary entry', async () => {
-    render(<App />);
-    const textarea = screen.getByPlaceholderText('Write your Dear Diary entry here...');
-    const submitButton = screen.getByText('Save Entry');
+  it('renders the form with one dropdown and two inputs', () => {
+    render(<FoodEntryForm handleEntry={mockHandleEntry} foods={mockFoods} />);
+    const dropdown = screen.getByRole('combobox');
+    const sizeInput = screen.getByPlaceholderText('Size');
+    const unitDropdown = screen.getByPlaceholderText('Unit');
+    const submitButton = screen.getByText('Submit Entry');
 
-    // Type a diary entry text into the textarea
-    await act(async () => {
-      await userEvent.type(textarea, 'My first diary entry!');
-    });
-
-    // Click the submit button
-    await act(async () => {
-      fireEvent.click(submitButton);
-    });
-
-    // Expect the submitted entry to be in the document
-    expect(screen.getByText('My first diary entry!')).toBeInTheDocument();
-
-    // Expect the textarea to be cleared after submission
-    expect(textarea).toHaveValue('');
+    expect(dropdown).toBeInTheDocument();
+    expect(sizeInput).toBeInTheDocument();
+    expect(unitDropdown).toBeInTheDocument();
+    expect(submitButton).toBeInTheDocument();
   });
 
-  test('editing a diary entry', async () => {
-    render(<App />);
-    const textarea = screen.getByPlaceholderText('Write your Dear Diary entry here...');
-    const submitButton = screen.getByText('Save Entry');
+  it('allows user to select food, size and unit options and submit form', async () => {
+    render(<FoodEntryForm handleEntry={mockHandleEntry} foods={mockFoods} />);
+    const dropdown = screen.getByRole('combobox');
+    const sizeInput = screen.getByPlaceholderText('Size');
+    const unitDropdown = screen.getByPlaceholderText('Unit');
+    const submitButton = screen.getByText('Submit Entry');
+
     await act(async () => {
-      await userEvent.type(textarea, 'My first diary entry!');
+      await userEvent.selectOptions(dropdown, 'apple');
+      await userEvent.type(sizeInput, '100');
+      await userEvent.selectOptions(unitDropdown, 'g');
       fireEvent.click(submitButton);
     });
 
-    // Click the Edit button
-    const editButton = screen.getByText('Edit');
-    fireEvent.click(editButton);
-
-    // Type an updated diary entry into the textarea
-    await act(async () => {
-      await userEvent.type(textarea, 'My updated diary entry!');
-    });
-  });
-
-  test('canceling edit of a diary entry', async () => {
-    render(<App />);
-    const textarea = screen.getByPlaceholderText('Write your Dear Diary entry here...');
-    const submitButton = screen.getByText('Save Entry');
-    await act(async () => {
-      await userEvent.type(textarea, 'My first diary entry!');
-      fireEvent.click(submitButton);
-    });
-
-    const editButton = screen.getByText('Edit');
-    fireEvent.click(editButton);
-
-    await act(async () => {
-      await userEvent.type(textarea, 'My updated diary entry!');
-    });
-
-    // Click the Cancel button
-    const cancelButton = screen.getByText('Cancel');
-    fireEvent.click(cancelButton);
-
-    // Expect the original entry to be in the document
-    expect(screen.getByText('My first diary entry!')).toBeInTheDocument();
-
-    // Expect the textarea to still contain the updated entry
-    expect(textarea).toHaveValue('My updated diary entry!');
-  });
-
-  test('deleting a diary entry', async () => {
-    render(<App />);
-    const textarea = screen.getByPlaceholderText('Write your Dear Diary entry here...');
-    const submitButton = screen.getByText('Save Entry');
-    await act(async () => {
-      await userEvent.type(textarea, 'My first diary entry!');
-      fireEvent.click(submitButton);
-    });
-
-    // Click the Delete button
-    const deleteButton = screen.getByText('Delete');
-    fireEvent.click(deleteButton);
-
-    // Expect the original entry not to be in the document
-    expect(screen.queryByText('My first diary entry!')).toBeNull();
+    expect(mockHandleEntry).toHaveBeenCalledTimes(1);
+    expect(mockHandleEntry).toHaveBeenCalledWith([
+      { food: 'apple', calories: 52, proteins: 0, fats: 0, carbohydrates: 14 }
+    ]);
   });
 });

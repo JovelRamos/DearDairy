@@ -37,29 +37,30 @@ describe('Food Entry Application', () => {
     const sizeInput = screen.getByPlaceholderText(/Size/i);
     const unitDropdown = screen.getByTestId('unit-dropdown');
     const submitButton = screen.getByText(/Submit Entry/i);
-
+  
     // Select the first food from the data
     fireEvent.click(foodDropdown);
     const foodOption = screen.getByText(/Zesty Italian Salad Dressing/i);
     fireEvent.click(foodOption);
-
+  
     // Set the serving size
     fireEvent.change(sizeInput, { target: { value: '1' } });
-
+  
     // Select the first unit for the food
     fireEvent.click(unitDropdown);
-    const unitOption = screen.getByText(/oz/i);
-    fireEvent.click(unitOption);
-
+    const unitOptions = screen.getAllByText(/oz/i);
+    fireEvent.click(unitOptions[0]); // Assuming the desired option is the first one
+  
     // Submit the form
     fireEvent.click(submitButton);
-
+  
     // Check if the entry is added to the table
     const foodEntry = screen.getByText(new RegExp(data.data[0].food_name, 'i'));
     expect(foodEntry).toBeInTheDocument();
-
+  
     // Check if the total row is displayed
     const totalRow = screen.getByText(/Total/i);
     expect(totalRow).toBeInTheDocument();
   });
+  
 });

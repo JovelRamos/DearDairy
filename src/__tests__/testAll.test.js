@@ -18,7 +18,7 @@ describe('Food Entry Application', () => {
     });
 
     test('renders the Food Entry form', async () => {
-        const foodDropdown = await screen.findByLabelText(/Food/i);
+        const foodDropdown = screen.getByLabelText(/Select Food/i);
         const sizeInput = screen.getByLabelText(/Size/i);
         const unitDropdown = screen.getByLabelText(/Unit/i);
         const addButton = screen.getByText(/Add Food!/i);

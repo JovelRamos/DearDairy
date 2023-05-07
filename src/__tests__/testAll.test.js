@@ -7,15 +7,15 @@ test('renders the app without errors', () => {
 
 test('adds a new entry to the diary', () => {
   const { getByPlaceholderText, getByText } = render(<FoodEntryStack />);
-  const foodDropdown = getByPlaceholderText('Select food');
+  const foodDropdown = getByPlaceholderText('Select a food'); // Update placeholder text
   const sizeInput = getByPlaceholderText('Size');
   const addButton = getByText('Add Food!');
 
-  fireEvent.change(foodDropdown, { target: { value: 'Apple' } });
+  fireEvent.change(foodDropdown, { target: { value: 'Almonds' } }); // Keep the value as Almonds
   fireEvent.change(sizeInput, { target: { value: '1' } });
   fireEvent.click(addButton);
 
-  const entry = getByText('Apple');
+  const entry = getByText('Almonds');
   expect(entry).toBeInTheDocument();
 });
 

@@ -40,7 +40,7 @@ describe('Food Entry Application', () => {
 
     // Select the first food from the data
     fireEvent.click(foodDropdown);
-    const foodOption = screen.getByText(new RegExp(data.data[0].food_name, 'i'));
+    const foodOption = screen.getByText(/apple/i);
     fireEvent.click(foodOption);
 
     // Set the serving size

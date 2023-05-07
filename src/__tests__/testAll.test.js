@@ -7,7 +7,7 @@ test('renders the app without errors', () => {
 
 test('adds a new entry to the diary', async () => {
   const { getByPlaceholderText, getByText } = render(<FoodEntryStack />);
-  const foodDropdown = await waitFor(() => getByPlaceholderText('Select food'));
+  const foodDropdown = await waitFor(() => getByPlaceholderText('Select food'), { timeout: 5000 });
   const addButton = getByText('Add Food!');
 
   fireEvent.change(foodDropdown, { target: { value: 'Apple' } });

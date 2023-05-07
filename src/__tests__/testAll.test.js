@@ -17,19 +17,20 @@ describe('Food Entry Application', () => {
       expect(headerElement).toBeInTheDocument();
     });
   
-    test('renders the Food Entry form', () => {
-      const foodDropdown = screen.getByPlaceholderText(/Select food/i);
-      const sizeInput = screen.getByPlaceholderText(/Size/i);
-      const unitDropdown = screen.getByPlaceholderText(/Unit/i);
-      const addButton = screen.getByText(/Add Food!/i);
-      const submitButton = screen.getByText(/Submit Entry/i);
-  
-      expect(foodDropdown).toBeInTheDocument();
-      expect(sizeInput).toBeInTheDocument();
-      expect(unitDropdown).toBeInTheDocument();
-      expect(addButton).toBeInTheDocument();
-      expect(submitButton).toBeInTheDocument();
-    });
+    test('renders the Food Entry form', async () => {
+        const foodDropdown = await screen.findByPlaceholderText(/Select food/i);
+        const sizeInput = screen.getByPlaceholderText(/Size/i);
+        const unitDropdown = screen.getByPlaceholderText(/Unit/i);
+        const addButton = screen.getByText(/Add Food!/i);
+        const submitButton = screen.getByText(/Submit Entry/i);
+      
+        expect(foodDropdown).toBeInTheDocument();
+        expect(sizeInput).toBeInTheDocument();
+        expect(unitDropdown).toBeInTheDocument();
+        expect(addButton).toBeInTheDocument();
+        expect(submitButton).toBeInTheDocument();
+      });
+      
   
     test('adds a food entry to the table and displays the total row', async () => {
       const foodDropdown = screen.getByPlaceholderText(/Select food/i);

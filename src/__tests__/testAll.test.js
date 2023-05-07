@@ -8,6 +8,7 @@ render(<FoodEntryStack />);
 test('adds a new entry to the diary', () => {
 const { getByPlaceholderText, getByText } = render(<FoodEntryStack />);
 const foodDropdown = getByPlaceholderText('Select food');
+foodDropdown = getByPlaceholderText('Almonds');
 const addButton = getByText('Add Food!');
 
 fireEvent.change(foodDropdown, { target: { value: 'Apple' } });

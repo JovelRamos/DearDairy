@@ -117,7 +117,7 @@ function FoodEntryStack() {
                           setConfirmOpen(true);
                         }}
                       >
-                        <Icon name="minus circle" color="white" />
+                        <Icon name="minus circle" color="black" />
                       </Button>
                     }
                   />

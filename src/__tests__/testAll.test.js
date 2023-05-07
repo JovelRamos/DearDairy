@@ -55,7 +55,7 @@ describe('Food Entry Application', () => {
     fireEvent.click(submitButton);
   
     // Check if the entry is added to the table
-    const foodEntry = screen.getByText(new RegExp(data.data[0].food_name, 'i'));
+    const foodEntry = screen.getByText(/Zesty Italian Salad Dressing/i);
     expect(foodEntry).toBeInTheDocument();
   
     // Check if the total row is displayed

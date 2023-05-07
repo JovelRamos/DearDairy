@@ -62,5 +62,53 @@ describe('Food Entry Application', () => {
     const totalRow = screen.getByText(/Total/i);
     expect(totalRow).toBeInTheDocument();
   });
+
+  test('adds multiple food entries to the table', async () => {
+    const foodDropdown = screen.getByTestId('food-dropdown');
+    const sizeInput = screen.getByPlaceholderText(/Size/i);
+    const unitDropdown = screen.getByTestId('unit-dropdown');
+    const addButton = screen.getByText(/Add Food!/i);
+    const submitButton = screen.getByText(/Submit Entry/i);
+
+    // Add first food entry
+    fireEvent.click(foodDropdown);
+    fireEvent.click(screen.getByText(/Zesty Italian Salad Dressing/i));
+    fireEvent.change(sizeInput, { target: { value: '1' } });
+    fireEvent.click(unitDropdown);
+    fireEvent.click(screen.getAllByText(/oz/i)[0]);
+    fireEvent.click(addButton);
+
+    // Add second food entry
+    fireEvent.click(foodDropdown);
+    fireEvent.click(screen.getByText(/Banana/i));
+    fireEvent.change(sizeInput, { target: { value: '1' } });
+    fireEvent.click(unitDropdown);
+    fireEvent.click(screen.getByText(/unit/i));
+    fireEvent.click(submitButton);
+
+    const foodEntries = screen.getAllByTestId("food-entry");
+    expect(foodEntries).toHaveLength(2);
+  });
+
+  test('deletes a food entry from the table', async () => {
+    const foodDropdown = screen.getByTestId('food-dropdown');
+    const sizeInput = screen.getByPlaceholderText(/Size/i);
+    const unitDropdown = screen.getByTestId('unit-dropdown');
+    const submitButton = screen.getByText(/Submit Entry/i);
+  
+    // Add a food entry
+    fireEvent.click(foodDropdown);
+    fireEvent.click(screen.getByText(/Zesty Italian Salad Dressing/i));
+    fireEvent.change(sizeInput, { target: { value: '1' } });
+    fireEvent.click(unitDropdown);
+    fireEvent.click(screen.getAllByText(/oz/i)[0]);
+    fireEvent.click(submitButton);
+  
+    // Delete the food entry
+    const deleteButton = screen.getByRole("button", { name: /Delete Food/i });
+    fireEvent.click(deleteButton);
+    await waitFor(() => expect(screen.queryByTestId("food-entry")).not.toBeInTheDocument());
+  });
+
   
 });

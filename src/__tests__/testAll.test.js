@@ -105,7 +105,7 @@ describe('Food Entry Application', () => {
     fireEvent.click(submitButton);
   
     // Delete the food entry
-    const deleteButton = screen.getByRole("button", { name: /Delete Food/i });
+    const deleteButton = screen.getByTestId('delete-button');
     fireEvent.click(deleteButton);
     await waitFor(() => expect(screen.queryByTestId("food-entry")).not.toBeInTheDocument());
   });

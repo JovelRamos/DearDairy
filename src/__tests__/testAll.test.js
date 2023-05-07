@@ -8,15 +8,20 @@ test('renders the app without errors', () => {
 test('adds a new entry to the diary', async () => {
   const { getByPlaceholderText, getByText } = render(<FoodEntryStack />);
   const foodDropdown = getByPlaceholderText('Select food');
-  const addButton = getByText('Add Food!');
 
   fireEvent.change(foodDropdown, { target: { value: 'Apple' } });
+
+  const sizeInput = getByPlaceholderText('Size');
+  const servingUnitInput = getByPlaceholderText('Serving unit');
+
+  fireEvent.change(sizeInput, { target: { value: '100' } });
+  fireEvent.change(servingUnitInput, { target: { value: 'grams' } });
+
+  const addButton = getByText('Add Food!');
   fireEvent.click(addButton);
 
   await waitFor(() => getByText('Almonds'));
 
-  const sizeInput = getByPlaceholderText('Size');
-  const servingUnitInput = getByPlaceholderText('Serving unit');
   const servingQtyInput = getByPlaceholderText('Serving qty');
 
   expect(sizeInput).toBeInTheDocument();

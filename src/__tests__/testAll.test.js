@@ -1,47 +1,71 @@
 import React from 'react';
 import { render, screen, fireEvent, act } from '@testing-library/react';
-import App from '../App';
-import '@testing-library/jest-dom'
+import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import FoodEntryForm from '../components/FoodEntryForm';
 
 describe('FoodEntryForm', () => {
-  const mockHandleEntry = jest.fn();
-  const mockFoods = [
-    { food_id: 1, food_name: 'apple', is_solid: true },
-    { food_id: 2, food_name: 'milk', is_solid: false },
+  const foods = [
+    { food_id: 1, food_name: 'Apple', is_solid: true },
+    { food_id: 2, food_name: 'Watermelon', is_solid: false },
+    { food_id: 3, food_name: 'Chicken', is_solid: true },
+    { food_id: 4, food_name: 'Salmon', is_solid: true },
   ];
 
-  it('renders the form with one dropdown and two inputs', () => {
-    render(<FoodEntryForm handleEntry={mockHandleEntry} foods={mockFoods} />);
-    const dropdown = screen.getByRole('combobox');
-    const sizeInput = screen.getByPlaceholderText('Size');
-    const unitDropdown = screen.getByPlaceholderText('Unit');
-    const submitButton = screen.getByText('Submit Entry');
+  const handleEntryMock = jest.fn();
 
-    expect(dropdown).toBeInTheDocument();
-    expect(sizeInput).toBeInTheDocument();
-    expect(unitDropdown).toBeInTheDocument();
-    expect(submitButton).toBeInTheDocument();
+  beforeEach(() => {
+    render(<FoodEntryForm handleEntry={handleEntryMock} foods={foods} />);
   });
 
-  it('allows user to select food, size and unit options and submit form', async () => {
-    render(<FoodEntryForm handleEntry={mockHandleEntry} foods={mockFoods} />);
-    const dropdown = screen.getByRole('combobox');
-    const sizeInput = screen.getByPlaceholderText('Size');
-    const unitDropdown = screen.getByPlaceholderText('Unit');
-    const submitButton = screen.getByText('Submit Entry');
+  it('renders the form', () => {
+    expect(screen.getByRole('button', { name: /submit entry/i })).toBeInTheDocument();
+  });
 
-    await act(async () => {
-      await userEvent.selectOptions(dropdown, 'apple');
-      await userEvent.type(sizeInput, '100');
-      await userEvent.selectOptions(unitDropdown, 'g');
-      fireEvent.click(submitButton);
+  it('adds a food dropdown on click of Add Food! button', () => {
+    const addButton = screen.getByRole('button', { name: /add food!/i });
+
+    act(() => {
+      userEvent.click(addButton);
     });
 
-    expect(mockHandleEntry).toHaveBeenCalledTimes(1);
-    expect(mockHandleEntry).toHaveBeenCalledWith([
-      { food: 'apple', calories: 52, proteins: 0, fats: 0, carbohydrates: 14 }
+    expect(screen.getAllByRole('combobox')).toHaveLength(2);
+  });
+
+  it('handles form submission and calls handleEntry', () => {
+    const foodDropdown = screen.getAllByRole('combobox')[0];
+    const servingSizeInput = screen.getAllByRole('spinbutton')[0];
+    const unitDropdown = screen.getAllByRole('combobox')[1];
+    const submitButton = screen.getByRole('button', { name: /submit entry/i });
+
+    // Select Apple from the dropdown
+    act(() => {
+      userEvent.selectOptions(foodDropdown, 'Apple');
+    });
+
+    // Enter serving size
+    act(() => {
+      userEvent.type(servingSizeInput, '1');
+    });
+
+    // Select unit from the dropdown
+    act(() => {
+      userEvent.selectOptions(unitDropdown, 'oz');
+    });
+
+    // Submit the form
+    act(() => {
+      userEvent.click(submitButton);
+    });
+
+    expect(handleEntryMock).toHaveBeenCalledWith([
+      {
+        food: 'Apple',
+        calories: 52,
+        proteins: 0,
+        fats: 0,
+        carbohydrates: 14,
+      },
     ]);
   });
 });

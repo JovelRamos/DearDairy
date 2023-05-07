@@ -1,4 +1,4 @@
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 import FoodEntryStack from '../components/FoodEntryStack';
 
 jest.setTimeout(10000);

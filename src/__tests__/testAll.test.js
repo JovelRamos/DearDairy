@@ -7,7 +7,7 @@ test('renders the app without errors', () => {
 
 test('adds a new entry to the diary', () => {
   const { getByPlaceholderText, getByText } = render(<FoodEntryStack />);
-  const foodDropdown = getByPlaceholderText('Select a food'); // Update placeholder text
+  const foodDropdown = getByPlaceholderText('Select food'); // Update placeholder text
   const sizeInput = getByPlaceholderText('Size');
   const addButton = getByText('Add Food!');
 

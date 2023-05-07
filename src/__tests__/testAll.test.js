@@ -6,6 +6,7 @@ import FoodEntryStack from '../components/FoodEntryStack';
 import FoodEntryForm from '../components/FoodEntryForm';
 import FoodEntry from '../components/FoodEntry';
 import App from '../App';
+import { data } from '../components/data.json';
 
 describe('Food Entry Application', () => {
   beforeEach(() => {

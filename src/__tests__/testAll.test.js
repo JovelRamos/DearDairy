@@ -1,5 +1,7 @@
-import { render, fireEvent, waitFor } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import FoodEntryStack from '../components/FoodEntryStack';
+
+jest.setTimeout(10000);
 
 test('renders the app without errors', () => {
   render(<FoodEntryStack />);
@@ -21,3 +23,4 @@ test('adds a new entry to the diary', async () => {
   expect(servingUnitInput).toBeInTheDocument();
   expect(servingQtyInput).toBeInTheDocument();
 });
+

@@ -1,58 +1,25 @@
-import React, { useState } from 'react';
-import DiaryEntryForm from './components/DiaryEntryForm';
-import DiaryEntriesList from './components/DiaryEntriesList';
-import './components/components-styles.css';
-import './global-styles.css';
+import './App.css';
+import React from 'react';
+import { Container, Header, Image, Segment } from 'semantic-ui-react';
+import FoodEntryStack from './components/FoodEntryStack';
+import logo from './logo.png';
 
-const App = () => {
-    const [entries, setEntries] = useState([]);
-  
-    const addEntry = (text) => {
-      const newEntry = {
-        id: Date.now(),
-        date: new Date().toLocaleDateString(),
-        text: text,
-      };
-      setEntries([...entries, newEntry]);
-    };
-  
-    const updateEntry = (id, text) => {
-      const updatedEntries = entries.map((entry) => {
-        if (entry.id === id) {
-          return {
-            ...entry,
-            text: text,
-          };
-        } else {
-          return entry;
-        }
-      });
-      setEntries(updatedEntries);
-    };
-  
-    const deleteEntry = (id) => {
-      const updatedEntries = entries.filter((entry) => entry.id !== id);
-      setEntries(updatedEntries);
-    };
-  
-    return (
-      <div className="app">
-        <header className="app-header">
-          <h1 className="app-title">Dear Diary</h1>
-        </header>
-        <main className="app-main">
-          <DiaryEntryForm onSubmit={addEntry} />
-          <DiaryEntriesList
-            entries={entries}
-            onEditEntry={updateEntry}
-            onDeleteEntry={deleteEntry}
-          />
-        </main>
-        <footer className="app-footer">
-          <p>© 2023 Dear Diary. All rights reserved.</p>
-        </footer>
-      </div>
-    );
-  };
+function App() {
+  return (
+    <div>
+      <Segment inverted textAlign='center' style={{ padding: '1em 0em', backgroundColor: '#8294C4' }}>
+        <Header as='h1' style={{ fontFamily: 'Kaushan Script', fontSize: '4em', margin: 0, color: '#eeeeee' }}>
+          <Image src={logo} style={{ width: '2em', height: '2em', marginRight: '0.5em' }} />
+          Dear Dairy
+        </Header>
+      </Segment>
+      <Container style={{ marginTop: '2em' }}>
+        <FoodEntryStack />
+      </Container>
+    </div>
+  );
+}
 
 export default App;
+
+

@@ -1,5 +1,5 @@
 import { render, fireEvent } from '@testing-library/react';
-import FoodEntryStack from './FoodEntryStack';
+import FoodEntryStack from '../components/FoodEntryStack';
 
 test('renders the app without errors', () => {
   render(<FoodEntryStack />);
@@ -18,3 +18,4 @@ test('adds a new entry to the diary', () => {
   const entry = getByText('Apple');
   expect(entry).toBeInTheDocument();
 });
+

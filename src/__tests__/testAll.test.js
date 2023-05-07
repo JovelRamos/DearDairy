@@ -32,7 +32,7 @@ describe('Food Entry Application', () => {
     });
 
     test('adds a food entry to the table and displays the total row', async () => {
-        const foodDropdown = screen.getByLabelText(/Food/i);
+        const foodDropdown = screen.getByLabelText(/Select Food/i);
         const sizeInput = screen.getByLabelText(/Size/i);
         const unitDropdown = screen.getByLabelText(/Unit/i);
         const submitButton = screen.getByText(/Submit Entry/i);

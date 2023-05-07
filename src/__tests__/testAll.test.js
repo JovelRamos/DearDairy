@@ -1,4 +1,4 @@
-import { render, fireEvent, waitFor } from '@testing-library/react';
+import { render, fireEvent, waitFor, getByPlaceholderText, getByText } from '@testing-library/react';
 import FoodEntryStack from '../components/FoodEntryStack';
 
 test('renders the app without errors', () => {

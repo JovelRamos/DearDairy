@@ -9,13 +9,19 @@ test('adds a new entry to the diary', async () => {
   const { getByPlaceholderText, getByText } = render(<FoodEntryStack />);
   const foodDropdown = getByPlaceholderText('Select food');
 
-  fireEvent.change(foodDropdown, { target: { value: 'Apple' } });
+  fireEvent.click(foodDropdown); // open dropdown menu
+  const searchInput = getByPlaceholderText('Search foods');
+  fireEvent.change(searchInput, { target: { value: 'Almonds' } }); // search for Almonds
+  fireEvent.click(getByText('Almonds')); // select Almonds
 
   const sizeInput = getByPlaceholderText('Size');
   const servingUnitInput = getByPlaceholderText('Serving unit');
 
   fireEvent.change(sizeInput, { target: { value: '100' } });
   fireEvent.change(servingUnitInput, { target: { value: 'grams' } });
+
+  fireEvent.click(foodDropdown); // open dropdown menu again
+  expect(foodDropdown.value).toBe(''); // dropdown menu should be cleared
 
   const addButton = getByText('Add Food!');
   fireEvent.click(addButton);

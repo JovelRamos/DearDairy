@@ -80,7 +80,7 @@ describe('Food Entry Application', () => {
 
     // Add second food entry
     fireEvent.click(foodDropdown);
-    fireEvent.click(screen.getAllByText(/Banana/i[0]));
+    fireEvent.click(screen.getAllByText(/Banana/i)[0]);
     fireEvent.change(sizeInput, { target: { value: '1' } });
     fireEvent.click(unitDropdown);
     fireEvent.click(screen.getByText(/unit/i));

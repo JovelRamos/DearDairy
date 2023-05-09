@@ -62,19 +62,19 @@ function FoodEntryForm({ handleEntry, foods }) {
                   search
                   selection
                   options={foodOptions}
-                  placeholder='Select food'
+                  placeholder='Select your food!'
                   value={selectedFood.food}
                   onChange={(e, data) => handleChange(e, data, index, 'food')}
-                  style={{ marginBottom: '1em' }}
+                  style={{ marginBottom: '1em'}}
                 />
                 <Input
-                  placeholder='Size'
+                  placeholder='Serving size'
                   type='number'
                   disabled={!selectedFood.food}
                   value={selectedFood.servingSize}
                   onChange={(e) => handleChange(e, { value: e.target.value }, index, 'servingSize')}
-                  min={0}
-                  style={{ width: '30%' }}
+                  min={1}
+                  style={{ width: '30%'}}
                 />
                 <Dropdown
                   data-testid="unit-dropdown"
@@ -82,10 +82,10 @@ function FoodEntryForm({ handleEntry, foods }) {
                   search
                   selection
                   options={unitOptions}
-                  placeholder='Unit'
+                  placeholder='Serving unit'
                   disabled={!selectedFood.food}
                   value={selectedFood.unit}
-                  onChange={(e, data) => handleChange(e, data, index, 'unit')} style={{ width: '70%' }}
+                  onChange={(e, data) => handleChange(e, data, index, 'unit')} style={{ width: '60%', float: 'right' }}
                 />
               </div>
             );

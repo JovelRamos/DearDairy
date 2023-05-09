@@ -81,14 +81,12 @@ function FoodEntryStack() {
       boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
       borderRadius: '5px',
     },
-    tableCell: { height: '50px' }
-
   };
   
 
   return (
     <div>
-      <Header as='h3' dividing textAlign='center' style={{ color: "black", fontFamily: 'Kaushan Script' }}>Write Your Diary Entries Here!</Header>
+      <Header as='h3' dividing textAlign='center' style={{ color: "black", fontFamily: 'Kaushan Script' }}>Write Your Food Diary Entries Here!</Header>
       <div className="form-wrapper">
         <FoodEntryForm handleEntry={handleEntry} foods={foods} />
       </div>
@@ -113,13 +111,13 @@ function FoodEntryStack() {
                     content="Delete Entry"
                     trigger={
                       <Button
-                        color="red"
+                        color="red" 
                         onClick={() => {
                           setTableToDelete(tableIndex);
                           setConfirmOpen(true);
                         }}
                       >
-                        <Icon name="minus circle" color="black" />
+                        <Icon name="trash" color="gray" />
                       </Button>
                     }
                   />
@@ -146,12 +144,12 @@ function FoodEntryStack() {
                 />
               ))}
               <Table.Row>
-              <Table.Cell textAlign="center" style={style.tableCell}><strong>Total</strong></Table.Cell>
-<Table.Cell textAlign="center" style={style.tableCell}><strong>{table.entries.reduce((acc, entry) => acc + Math.round(entry.calories), 0)}</strong></Table.Cell>
-<Table.Cell textAlign="center" style={style.tableCell}><strong>{table.entries.reduce((acc, entry) => acc + Math.round(entry.proteins), 0)}</strong></Table.Cell>
-<Table.Cell textAlign="center" style={style.tableCell}><strong>{table.entries.reduce((acc, entry) => acc + Math.round(entry.fats), 0)}</strong></Table.Cell>
-<Table.Cell textAlign="center" style={style.tableCell}><strong>{table.entries.reduce((acc, entry) => acc + Math.round(entry.carbohydrates), 0)}</strong></Table.Cell>
-<Table.Cell textAlign="center" style={style.tableCell}></Table.Cell>
+                <Table.Cell textAlign="center"><strong>Total</strong></Table.Cell>
+                <Table.Cell textAlign="center"><strong>{table.entries.reduce((acc, entry) => acc + Math.round(entry.calories), 0)}</strong></Table.Cell>
+                <Table.Cell textAlign="center"><strong>{table.entries.reduce((acc, entry) => acc + Math.round(entry.proteins), 0)}</strong></Table.Cell>
+                <Table.Cell textAlign="center"><strong>{table.entries.reduce((acc, entry) => acc + Math.round(entry.fats), 0)}</strong></Table.Cell>
+                <Table.Cell textAlign="center"><strong>{table.entries.reduce((acc, entry) => acc + Math.round(entry.carbohydrates), 0)}</strong></Table.Cell>
+                <Table.Cell textAlign="center"></Table.Cell>
               </Table.Row>
             </Table.Body>
             </Table>
